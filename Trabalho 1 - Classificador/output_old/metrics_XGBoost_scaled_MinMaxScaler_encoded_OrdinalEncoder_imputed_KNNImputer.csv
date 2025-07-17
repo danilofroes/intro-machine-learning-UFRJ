@@ -1,0 +1,4 @@
+metric,value
+accuracy_score,0.5596707818930041
+avg_accuracy_score,0.5596707818930041
+Key:,XGBoost_scaled_MinMaxScaler_encoded_OrdinalEncoder_imputed_KNNImputer

@@ -1,0 +1,4 @@
+metric,value
+accuracy_score,0.5720164609053497
+avg_accuracy_score,0.5720164609053497
+Key:,RandomForest_scaled_RobustScaler_encoded_OrdinalEncoder_imputed_KNNImputer

@@ -1,0 +1,4 @@
+metric,value
+accuracy_score,0.5555555555555556
+avg_accuracy_score,0.5555555555555556
+Key:,RandomForest_scaled_RobustScaler_encoded_OrdinalEncoder_imputed_SimpleImputer
