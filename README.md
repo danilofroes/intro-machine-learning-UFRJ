@@ -1,4 +1,4 @@
-# 📚 Introdução ao Aprendizado de Máquina (UFRJ) - Portfólio de Projetos
+# 📚 Introdução ao Aprendizado de Máquina (UFRJ) - Trabalhos
 
 Este repositório serve como um portfólio dos trabalhos desenvolvidos para a disciplina **EEL891 - Introdução ao Aprendizado de Máquina**, ministrada na Universidade Federal do Rio de Janeiro (UFRJ) durante o semestre 2025.1.
 
