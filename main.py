@@ -9,7 +9,8 @@ from sklearn.metrics import accuracy_score
 
 from sklearn.model_selection import train_test_split, KFold, StratifiedKFold
 
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+# from skopt import BayesSearchCV
 
 class ClassificationEvaluator:
     def __init__(self, output_path):
@@ -54,16 +55,16 @@ class ModeloML:
     def __init__(self):
         self.pipeline_registry = {}
 
-    def load_data(self, path_test, path_train):
+    def load_data(self, df_treinamento, df_predicao):
 
-        df_train = pd.read_csv(path_train) # Carrega os dados de treino como DataFrames do Pandas
+        y_col = 'inadimplente'  # Coluna target
+        x_cols = df_treinamento.drop(columns=[y_col]).columns  # Colunas de features
 
         # Divide os dados de treino em X (features) e y (target)
-        self.y_train = df_train['inadimplente']
-        self.X_train = df_train.drop(columns=['inadimplente'])
+        self.y_train = df_treinamento[y_col]
+        self.X_train = df_treinamento[x_cols]
 
-        df_predict = pd.read_csv(path_test) # Carrega os dados de previsão como DataFrames do Pandas
-        X_predict = df_predict.copy() # Cópia para evitar alterações no DataFrame original
+        X_predict = df_predicao.copy() # Cópia para evitar alterações no DataFrame original
 
     def holdout(self, test_size=0.2, random_state=42):
 
@@ -212,7 +213,7 @@ class ModeloML:
 
         self.pipeline_registry = new_pipeline_registry # Atualiza o registro de pipeline com os dados imputados
 
-    def select_model(self, models, select_method):
+    def select_model(self, models):
 
         new_pipeline_registry = {}
         fold_results = []
@@ -227,12 +228,14 @@ class ModeloML:
             best_models = {}
 
             model = model_info['model']
+
+            model = model_info['model']
             hyperparameters = model_info['hyperparameters'] if 'hyperparameters' in model_info else {}
+            selection_method = model_info['selection_method'] if 'selection_method' in model_info else 'grid'
             scoring = model_info['scoring'] if 'scoring' in model_info else 'accuracy'
             cv = model_info['cv'] if 'cv' in model_info else 5
-
-            method = select_method['method']
-            params = select_method['params']
+            n_iter = model_info['n_iter'] if 'n_iter' in model_info else 10
+            random_state = model_info['random_state'] if 'random_state' in model_info else 0
 
             evaluator = ClassificationEvaluator(output_path)
 
@@ -254,7 +257,13 @@ class ModeloML:
                     X_train.colums = X_train.columns.astype(str)
                     X_test.columns = X_test.columns.astype(str)
 
-                    search = method(model, X_train, y_train, **params)
+                    if selection_method == 'grid':
+                        search = GridSearchCV(model, X_train, y_train, hyperparameters=hyperparameters, scoring=scoring, cv=cv)
+                    elif selection_method == 'random':
+                        search = RandomizedSearchCV(model, X_train, y_train, hyperparameters=hyperparameters, scoring=scoring, cv=cv, n_iter=n_iter, random_state=random_state)
+                    # elif selection_method == 'bayes':
+                    #     search = BayesSearchCV(model, X_train, y_train, hyperparameters=hyperparameters, scoring=scoring, cv=cv, n_iter=n_iter, random_state=random_state)
+                    
                     best_models[key_model].append(search.best_estimator_)
 
                     y_pred = search.predict(X_test)
@@ -279,6 +288,3 @@ class ModeloML:
             except ImportError:
                 print("\n--- Model Selection Summary ---")
                 print(df_models.to_string())
-
-
-    
