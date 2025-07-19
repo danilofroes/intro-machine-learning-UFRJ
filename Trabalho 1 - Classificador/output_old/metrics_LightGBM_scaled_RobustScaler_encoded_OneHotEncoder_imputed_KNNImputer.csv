@@ -1,4 +1,0 @@
-metric,value
-accuracy_score,0.6049382716049383
-avg_accuracy_score,0.6049382716049383
-Key:,LightGBM_scaled_RobustScaler_encoded_OneHotEncoder_imputed_KNNImputer
